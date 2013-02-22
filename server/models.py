@@ -13,6 +13,8 @@ Session = sessionmaker(bind=engine)
 
 class User(Base):
     __tablename__ = 'users'
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
 
     id = Column(String(50), primary_key = True)
     secret = Column(String(50))
@@ -22,17 +24,21 @@ class User(Base):
 
 class File(Base):
     __tablename__ = 'files'
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
 
     id = Column(Integer(), primary_key = True)
-    filename = Column(String(120))
+    filename = Column(String(120), nullable=False)
     md5 = Column(String(32))
 
 class Owner(Base):
     __tablename__ = 'owners'
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
 
     id = Column(Integer(), primary_key = True)
     owner = Column(String(50), ForeignKey('users.id'))
-    filename = Column(String(120), ForeignKey('files.filename'))
+    fileid = Column(Integer(), ForeignKey('files.id'))
     dirpath = Column(String(150))
 
 if __name__ == "__main__":
