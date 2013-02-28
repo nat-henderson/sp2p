@@ -1,6 +1,6 @@
 from flask import Flask, request
 from models import User, File, Owner, Base, Session
-from sqlalchemy import join
+from sqlalchemy import DateTime
 import datetime, json
 
 app = Flask(__name__)
@@ -9,17 +9,12 @@ app = Flask(__name__)
 @app.route("/search/<query>")
 def search(query):
     session = Session()
-    files = session.query(File).filter(File.filename.like('%' + query + '%'))
-    searchresults = []
-    for f in files.distinct().all():
-        owners = session.query(Owner).filter(Owner.fileid == f.id)
-        for o in owners.distinct().all():
-            usable = session.query(User).filter(User.id == o.owner).filter(
-                    User.lastping + datetime.timedelta(seconds=30) >= datetime.datetime.now())
-            for u in usable.distinct().all():
-                searchresults.append({'user' : u.id, 'ip' : u.lastip, 'port' : u.lastport,
-                    'filename' : f.filename, 'hash' : f.md5, 'path' : o.dirpath})
-    return json.dumps(searchresults)
+    files = session.query(Owner, User, File).filter(File.filename.like('%' + query + '%'))
+    files = files.filter(User.lastping > datetime.datetime.now() - datetime.timedelta(seconds=30))
+    values = []
+    for (owner, user, f) in files.all():
+        values.append({"path":owner.dirpath, "userip":user.lastip, "port":user.lastport, "hash":f.md5})
+    return json.dumps(values)
 
 
 @app.route("/signin", methods = ["POST"])
@@ -31,12 +26,9 @@ def signin():
     secret = request.form['secret']
     openport = int(request.form['openport'])
     users = session.query(User).filter(User.id == username).all()
-    print users
     if (len(users) == 0):
-        print request.remote_addr
         now = datetime.datetime.now()
         user = User(id=username, secret = secret, lastping = now, lastip=request.remote_addr, lastport = openport)
-        print user
         session.add(user)
         session.commit()
         session.close()
@@ -45,6 +37,7 @@ def signin():
         if users[0].secret == secret:
             users[0].lastip = request.remote_addr
             users[0].lastport = openport
+            users[0].lastping = datetime.datetime.now()
             session.add(users[0])
             for ownership in session.query(Owner).filter(Owner.owner == username).all():
                 session.delete(ownership)
