@@ -1,0 +1,13 @@
+d61d66b7985a8a3ddb28122835b5fdff~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\WPSDK 8 RC1.zip
+df8a1ed53dabf906294364e2f444e0fb~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkWalletPaymentInstrumentsWP8CS.zip
+246e66c69537f20d9518d33bd2a33012~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkBluetoothA2AWP8CS.zip
+1cf530e8ea06a1924c89f24fdebf9669~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\Windows Phone 8 Release Notes.htm
+d2bb0c9ecdc17fb7250e2cbdf734dbc7~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkLocationWP8CS.zip
+8df4e808ad03f448e655dcc567ce44df~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\Twitter_LoadingPattern_sample.zip
+20fd30ee92e30fb76ca631b972eeb82c~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkPhotoExtensibilityWP8CS.zip
+4c01de1eef28ca09af75fe37c7c0f826~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkWalletMembershipDealsWP8CS.zip
+9a7f441ebc7c014130c1fcf9650c1141~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\PhotoHubSample.zip
+588670e62d2527c8c1f39ecfecfcfaab~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkBluetoothA2DWP8CS.zip
+178a048a41140c5047972b0b3a484dfb~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\Windows Phone 8 Developer Documentation.chm
+517a189d306e5bc4d77980978d1bf2e2~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\sdkBasicTTSWP8CS.zip
+69adfba116bc598a3a175859585b3707~!~C:\Users\Jason\Documents\Osu\Windows Phone SDK RC\PeopleHub.zip
