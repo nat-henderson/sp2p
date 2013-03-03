@@ -82,14 +82,14 @@ public class MainWindow extends javax.swing.JFrame {
 
             },
             new String [] {
-                "File Name", "File Size"
+                "File Name", "File Size", "Hash"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -100,7 +100,10 @@ public class MainWindow extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        resultsTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(resultsTable);
+        resultsTable.getColumnModel().getColumn(2).setMinWidth(0);
+        resultsTable.getColumnModel().getColumn(2).setMaxWidth(0);
 
         SearchText.setText("Enter Search Terms");
         SearchText.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -224,7 +227,8 @@ public class MainWindow extends javax.swing.JFrame {
                 String[] searchResults = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/search/"+SearchText.getText(), "GET", null);
                 for (String s : searchResults){
                     JSONObject js = (JSONObject)JSONValue.parse(s);
-                    ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size")});
+                    ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size"), js.get("hash")});
+                    //resultsTable.getColumn("Hash").getCellRenderer().getTableCellRendererComponent(resultsTable, js, false, false, WIDTH, WIDTH).setVisible(false);
 //                    System.out.println(s);
                 }
                 
