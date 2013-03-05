@@ -82,14 +82,14 @@ public class MainWindow extends javax.swing.JFrame {
 
             },
             new String [] {
-                "File Name", "File Size", "Hash"
+                "File Name", "File Size", "Hash", "IP", "Port"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class, java.lang.String.class
+                java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -102,8 +102,17 @@ public class MainWindow extends javax.swing.JFrame {
         });
         resultsTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(resultsTable);
+        resultsTable.getColumnModel().getColumn(0).setResizable(false);
+        resultsTable.getColumnModel().getColumn(1).setResizable(false);
         resultsTable.getColumnModel().getColumn(2).setMinWidth(0);
+        resultsTable.getColumnModel().getColumn(2).setPreferredWidth(0);
         resultsTable.getColumnModel().getColumn(2).setMaxWidth(0);
+        resultsTable.getColumnModel().getColumn(3).setMinWidth(0);
+        resultsTable.getColumnModel().getColumn(3).setPreferredWidth(0);
+        resultsTable.getColumnModel().getColumn(3).setMaxWidth(0);
+        resultsTable.getColumnModel().getColumn(4).setMinWidth(0);
+        resultsTable.getColumnModel().getColumn(4).setPreferredWidth(0);
+        resultsTable.getColumnModel().getColumn(4).setMaxWidth(0);
 
         SearchText.setText("Enter Search Terms");
         SearchText.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -227,9 +236,7 @@ public class MainWindow extends javax.swing.JFrame {
                 String[] searchResults = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/search/"+SearchText.getText(), "GET", null);
                 for (String s : searchResults){
                     JSONObject js = (JSONObject)JSONValue.parse(s);
-                    ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size"), js.get("hash")});
-                    //resultsTable.getColumn("Hash").getCellRenderer().getTableCellRendererComponent(resultsTable, js, false, false, WIDTH, WIDTH).setVisible(false);
-//                    System.out.println(s);
+                    ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size"), js.get("hash"), js.get("ip"), js.get("port")});
                 }
                 
             } catch (IOException ex) {
@@ -254,9 +261,10 @@ public class MainWindow extends javax.swing.JFrame {
         params.put("secret", "correcthorsebatterystaple");
         params.put("openport", "1234");
         try {
-            String[] lol = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/signin", "POST", params);
-            for (String s : lol)
-                System.out.println(s);
+            String[] postResponse = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/signin", "POST", params);
+            for (String s : postResponse)
+                if ("True".equals(s))
+                    System.out.println("Logged in successfully.");
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -271,7 +279,8 @@ public class MainWindow extends javax.swing.JFrame {
           try {
             String[] ret = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/register", "POST", params);
             for (String str : ret)
-                System.out.println(str);
+                if ("True".equals(str))
+                    System.out.println("File"+ params.get("filename") +"Registered");
           } catch (Exception ex) {
               Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -279,16 +288,22 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_ConnectButtonActionPerformed
 
     private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadButtonActionPerformed
-        //Code to get selected items from text box
-        //etc
+        //Code to get selected items from table
+        int [] rowIndices = resultsTable.getSelectedRows();
+        List<String[]> selectedRows = new ArrayList<>();
+        for (int i : rowIndices){
+            String[] rowData = new String[5];
+            rowData[0] = (String)resultsTable.getValueAt(0, i);
+            rowData[1] = (String)resultsTable.getValueAt(1, i);
+            rowData[2] = (String)resultsTable.getValueAt(2, i);
+            rowData[3] = (String)resultsTable.getValueAt(3, i);
+            rowData[4] = (String)resultsTable.getValueAt(4, i);
+            selectedRows.add(rowData);
+        }
         
-        String ip = "129.22.41.100";
-        String filename = "whee.txt";
-        String hash = "abcdefgh";
-        String port = "23";
-        List<String[]> downloadList = new ArrayList<>();
-        for (String[] s : downloadList){
-            pool.submit(new FileDownloader(s[0], s[1], s[2], s[3]));
+        //Queue the downloads to the ExecutorService
+        for (String[] s : selectedRows){
+            pool.submit(new FileDownloader(s[0], s[1], s[2], s[3], s[4]));
         }
     }//GEN-LAST:event_downloadButtonActionPerformed
 

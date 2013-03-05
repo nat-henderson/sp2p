@@ -23,15 +23,16 @@ import java.util.logging.Logger;
 public class FileDownloader implements Runnable {
     private String ip;
     private String filename;
+    private int fileSize;
     private String hash;
-    private String port;
+    private int port;
     
-    public FileDownloader(){
-        
-    }
-    
-    public FileDownloader(String ip, String filename, String hash, String port){
-        
+    public FileDownloader(String filename, String fileSize, String hash, String ip, String port){
+        this.filename = filename;
+        this.fileSize = Integer.parseInt(fileSize);
+        this.hash = hash;
+        this.ip = ip;
+        this.port = Integer.parseInt(port);
     }
     
     @Override
@@ -46,7 +47,7 @@ public class FileDownloader implements Runnable {
         InputStream in = null;
 
         try {
-            dlSocket = new Socket(ip, Integer.parseInt(port));
+            dlSocket = new Socket(ip, port);
             out = new PrintWriter(dlSocket.getOutputStream(), true);
             //in = new BufferedReader(new InputStreamReader(
             //                            dlSocket.getInputStream()));
@@ -60,7 +61,7 @@ public class FileDownloader implements Runnable {
         }
 
         try{
-            out.println(filename+"~!~"+hash);
+            out.println(hash+"~!~"+filename);
             
             FileOutputStream outStream = 
                       new FileOutputStream(filename);
