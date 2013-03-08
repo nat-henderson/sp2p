@@ -39,7 +39,8 @@ import org.json.simple.*;
 public class MainWindow extends javax.swing.JFrame {
 
     static private final String newline = "\n";
-    static Map<String, File>fileMap;
+    static Map<String, File> fileMap;
+    static Map<String, String> settings;
     JFileChooser chooser;
     ExecutorService pool;
     FileServer server;
@@ -156,6 +157,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         optionsButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK));
         optionsButton.setText("Options");
+        optionsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optionsButtonActionPerformed(evt);
+            }
+        });
         toolsMenu.add(optionsButton);
 
         jMenuBar1.add(toolsMenu);
@@ -209,9 +215,6 @@ public class MainWindow extends javax.swing.JFrame {
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("Choose some folders!");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        //
-        // disable the "All files" option.
-        //
         chooser.setAcceptAllFileFilterUsed(false);
         
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -221,31 +224,31 @@ public class MainWindow extends javax.swing.JFrame {
             catch(NoSuchAlgorithmException | IOException ex){
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-          }
+            
+            writeFileMap();
+        }
         else {
             System.out.println("No Selection ");
         }
-        writeFileMap();
     }//GEN-LAST:event_ChooseFilesButtonActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-//        for (File f : fileMap.keySet()){
-//            System.out.println(f.getName() + " " + fileMap.get(f));
-//        }
+//    for (File f : fileMap.keySet()){
+//        System.out.println(f.getName() + " " + fileMap.get(f));
+//    }
         try {
-                String[] searchResults = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/search/"+SearchText.getText(), "GET", null);
-                for (String s : searchResults){
-                    JSONObject js = (JSONObject)JSONValue.parse(s);
-                    ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size"), js.get("hash"), js.get("ip"), js.get("port")});
-                }
-                
-            } catch (IOException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            String[] searchResults = HttpRequestUtility.sendHttpRequest("http://kilvin.case.edu/search/"+SearchText.getText(), "GET", null);
+            for (String s : searchResults){
+                JSONObject js = (JSONObject)JSONValue.parse(s);
+                ((DefaultTableModel)resultsTable.getModel()).addRow(new Object[]{js.get("filename"), js.get("size"), js.get("hash"), js.get("ip"), js.get("port")});
             }
+
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_SearchButtonActionPerformed
 
     private void SearchTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_SearchTextFocusGained
-        // TODO add your handling code here:
         SearchText.setText("");
     }//GEN-LAST:event_SearchTextFocusGained
 
@@ -307,6 +310,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_downloadButtonActionPerformed
 
+    private void optionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionsButtonActionPerformed
+        new OptionsDialog(this, true).setVisible(true);
+    }//GEN-LAST:event_optionsButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -356,10 +363,10 @@ public class MainWindow extends javax.swing.JFrame {
             new RegexFileFilter("^(.*?)"), 
             DirectoryFileFilter.DIRECTORY
         );
+        
         Map<String, File> createMap;
         createMap = new HashMap<>();
         for (File f : files){
-            MessageDigest md = MessageDigest.getInstance("MD5");
             FileInputStream is;
             is = new FileInputStream(f);
             createMap.put(DigestUtils.md5Hex(is), f);

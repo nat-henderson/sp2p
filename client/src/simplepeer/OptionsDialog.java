@@ -8,12 +8,13 @@ package simplepeer;
  *
  * @author Jason
  */
-public class OptionsWindow extends javax.swing.JFrame {
+public class OptionsDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form OptionsWindow
+     * Creates new form OptionsDialog
      */
-    public OptionsWindow() {
+    public OptionsDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
     }
 
@@ -26,40 +27,34 @@ public class OptionsWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        serverLabel = new javax.swing.JLabel();
-        serverTextField = new javax.swing.JTextField();
-        usernameLabel = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        pwLabel = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        secretLabel = new javax.swing.JLabel();
         secretField = new javax.swing.JTextField();
+        secretLabel = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
         portLabel = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         portField = new javax.swing.JTextField();
+        pwLabel = new javax.swing.JLabel();
         okButton = new javax.swing.JButton();
+        serverTextField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
+        usernameLabel = new javax.swing.JLabel();
+        serverLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        serverLabel.setText("Server");
-
-        serverTextField.setText("Enter Server Name");
-
-        usernameLabel.setText("Username");
-
-        jTextField1.setText("Enter Username");
-
-        pwLabel.setText("Password");
-
-        jTextField2.setText("Enter Password");
-
-        secretLabel.setText("Secret");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         secretField.setText("Enter Secret Code");
 
+        secretLabel.setText("Secret");
+
+        jTextField2.setText("Enter Password");
+
         portLabel.setText("Port");
 
+        jTextField1.setText("Enter Username");
+
         portField.setText("Enter Port");
+
+        pwLabel.setText("Password");
 
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -68,7 +63,18 @@ public class OptionsWindow extends javax.swing.JFrame {
             }
         });
 
+        serverTextField.setText("Enter Server Name");
+
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        usernameLabel.setText("Username");
+
+        serverLabel.setText("Server");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,7 +102,7 @@ public class OptionsWindow extends javax.swing.JFrame {
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,11 +127,11 @@ public class OptionsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portLabel)
                     .addComponent(portField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
                     .addComponent(cancelButton))
-                .addContainerGap())
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -134,6 +140,11 @@ public class OptionsWindow extends javax.swing.JFrame {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        setVisible(false);
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,20 +163,27 @@ public class OptionsWindow extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OptionsWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OptionsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OptionsWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OptionsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OptionsWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OptionsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OptionsWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OptionsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new OptionsWindow().setVisible(true);
+                OptionsDialog dialog = new OptionsDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
