@@ -9,11 +9,12 @@ app = Flask(__name__)
 @app.route("/search/<query>")
 def search(query):
     session = Session()
-    files = session.query(Owner, User, File).filter(File.filename.like('%' + query + '%'))
+    files = session.query(Owner, User, File).filter(Owner.owner == User.id).filter(Owner.fileid == File.id)
+    files = files.filter(File.filename.like('%' + query + '%'))
     files = files.filter(User.lastping > datetime.datetime.now() - datetime.timedelta(seconds=30))
     values = []
     for (owner, user, f) in files.all():
-        values.append({"path":owner.dirpath, "userip":user.lastip, "port":user.lastport, "hash":f.md5})
+        values.append({"path":owner.dirpath, "userip":user.lastip, "port":user.lastport, "hash":f.md5, "filename":f.filename, "size":f.filesize})
     return json.dumps(values)
 
 
@@ -49,16 +50,17 @@ def signin():
 
 @app.route("/register", methods = ["POST"])
 def register():
-    if 'username' not in request.form or 'filename' not in request.form or 'hash' not in request.form:
-        return "\"POST request must contain 'username', 'filename', and 'hash'.\""
+    if 'username' not in request.form or 'filename' not in request.form or 'hash' not in request.form or 'size' not in request.form:
+        return "\"POST request must contain 'username', 'filename', 'size', and 'hash'.\""
     session = Session()
     username = request.form['username']
     filename = request.form['filename']
     md5 = request.form['hash']
-    files = session.query(File).filter(File.filename == filename, File.md5 == md5)
+    size = request.form['size']
+    files = session.query(File).filter(File.filename == filename).filter(File.md5 == md5)
     files = files.all()
     if len(files) == 0:
-        f = File(filename= filename, md5 = md5)
+        f = File(filename= filename, md5 = md5, filesize = size)
         session.add(f)
         session.commit()
     else:
@@ -68,11 +70,13 @@ def register():
         loc = request.form['path']
     else:
         loc = filename
-    if not session.query(Owner).filter(Owner.owner == username, Owner.dirpath == loc, Owner.fileid == fileid).all():
+
+    print username, filename, md5, loc
+    if not session.query(Owner).filter(Owner.owner == username).filter(Owner.dirpath == loc).filter(Owner.fileid == fileid).all():
         session.add(Owner(owner = username, dirpath = loc, fileid = fileid))
     session.commit()
     session.close()
     return json.dumps(True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

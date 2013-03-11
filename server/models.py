@@ -26,6 +26,7 @@ class File(Base):
     id = Column(Integer(), primary_key = True)
     filename = Column(String(120), nullable=False)
     md5 = Column(String(32))
+    filesize = Column(Integer())
 
 class Owner(Base):
     __tablename__ = 'owners'
